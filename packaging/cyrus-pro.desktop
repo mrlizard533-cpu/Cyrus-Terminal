@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Cyrus Pro
+Comment=Cyrus Terminal
+Exec=/usr/local/bin/cyrus-pro
+Icon=cyrus-pro
+Terminal=true
+Categories=System;Utility;TerminalEmulator;
+StartupNotify=true
