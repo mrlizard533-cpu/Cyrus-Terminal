@@ -2,6 +2,8 @@ import os
 import sys
 import socket
 from prompt_toolkit import PromptSession
+from prompt_toolkit.lexers import Lexer
+from prompt_toolkit.document import Document
 from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.styles import Style
 from prompt_toolkit.shortcuts import print_formatted_text
@@ -45,7 +47,52 @@ class SystemCompleter(Completer):
         for command in self.commands:
             if command.startswith(word):
                 yield Completion(command, start_position=-len(word))
+class CommandLexer(Lexer):
+    def lex_document(self, document):
+        def get_line(lineno):
+            line = document.lines[lineno]
 
+            if not line.strip():
+                return line
+
+            parts = line.split()
+            if not parts:
+                return line
+
+            command = parts[0]
+
+            # دستورات رایج لینوکس
+            commands = {
+                "ls", "cd", "pwd", "mkdir", "rmdir",
+                "cp", "mv", "rm", "touch", "cat",
+                "less", "more", "head", "tail",
+                "grep", "find", "locate",
+                "sudo", "apt", "apt-get",
+                "python", "python3", "pip", "pip3",
+                "nano", "vim", "nvim",
+                "clear", "echo", "printf",
+                "whoami", "id", "uname",
+                "chmod", "chown",
+                "ps", "kill", "top", "htop",
+                "ip", "ping", "curl", "wget",
+                "ssh", "scp",
+                "tar", "zip", "unzip",
+                "git", "systemctl",
+                "ifconfig", "netstat", "ss"
+            }
+
+            if command in commands:
+                start = line.find(command)
+
+                return [
+                    ("class:command", line[:start]),
+                    ("class:command", command),
+                    ("", line[start + len(command):])
+                ]
+
+            return line
+
+        return get_line
 
 class KouroshTerminal:
 
@@ -57,13 +104,15 @@ class KouroshTerminal:
             "host": "bold #FF0000",
             "path": "bold #00AFFF",
             "arrow": "bold #00FF00",
+            "command": "bold #00AFFF",
         })
 
-        self.session = PromptSession(
-            completer=SystemCompleter(),
-            complete_while_typing=True,
-            style=style
-        )
+     self.session = PromptSession(
+    completer=SystemCompleter(),
+    complete_while_typing=True,
+    style=style,
+    lexer=CommandLexer()
+)
 
         # نام کاربر و hostname واقعی، مثل ترمینال کالی
         self.user = os.environ.get("USER") or os.environ.get("LOGNAME") or "kali"
