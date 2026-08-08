@@ -70,3 +70,10 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 ## Author
 
 Cyrus Pro
+
+## Contact
+
+If you have questions, suggestions, bug reports, or want to get in touch:
+
+**Telegram:** [@Elliot1999](https://t.me/Elliot1999)
+
